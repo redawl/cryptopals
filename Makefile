@@ -1,35 +1,14 @@
-c1p1: c1p1.o bytes.o
-	gcc c1p1.o bytes.o -lssl -lcrypto
-	rm *.o
-	./a.out
-	rm a.out
-c1p2: c1p2.o bytes.o
-	gcc c1p2.o bytes.o -lssl -lcrypto
-	rm *.o 
-	./a.out
-	rm a.out
-c1p3: c1p3.o bytes.o
-	gcc c1p3.o bytes.o -lssl -lcrypto
-	rm *.o 
-	./a.out	
-	rm a.out
-c1p4: c1p4.o bytes.o
-	gcc c1p4.o bytes.o -lssl -lcrypto
-	rm *.o
-	./a.out < input4.txt
-	rm a.out
-c1p5: c1p5.o bytes.o
-	gcc c1p5.o bytes.o -lssl -lcrypto
-	rm *.o
-	./a.out 
-	rm a.out
-c1p6: c1p6.o bytes.o
-	gcc c1p6.o bytes.o -lssl -lcrypto
-	rm *.o
-	./a.out 
-	rm a.out
-c1p7: c1p7.o bytes.o
-	gcc c1p7.o bytes.o -lssl -lcrypto
-	rm *.o
-	./a.out
-	rm a.out
+# Needs it own target, since the exe requires input4.txt redirected to stdin
+c1p4.run: c1p4.o bytes.o
+	$(CC) $^  -lssl -lcrypto -o $@
+	$(RM) $^
+	./$@ < input4.txt
+	$(RM) $@
+
+%.run: %.o bytes.o
+	$(CC) $^  -lssl -lcrypto -o $@
+	$(RM) $^
+	./$@
+	$(RM) $@
+
+
