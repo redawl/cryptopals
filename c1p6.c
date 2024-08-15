@@ -68,9 +68,9 @@ int main () {
                 "AB0cRSo+AwgKRSANExlJCBQaBAsANU9TKxFJL0dMHRwRTAtPBRwQMAAATQcB"
                 "FlRlIkw5QwA2GggaR0YBBg5ZTgIcAAw3SVIaAQcVEU8QTyEaYy0fDE4ITlhI"
                 "Jk8DCkkcC3hFMQIEC0EbAVIqCFZBO1IdBgZUVA4QTgUWSR4QJwwRTWM=";
-    struct byte * data = alloc_bytes(strlen(base));
+    byte * data = alloc_bytes(strlen(base));
     int len = from_b64(base, data);
-    struct byte * output = alloc_bytes(len);
+    byte * output = alloc_bytes(len);
     repeating_key_xor_decrypt(data, len, output);
     print(output, len);
     printf("\n");

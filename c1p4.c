@@ -7,9 +7,9 @@ int main(){
     int counter = 0;
     char * data = (char *)malloc(100 * sizeof(char));
     float max = 0.0;
-    struct byte * ans = alloc_bytes(100);
-    struct byte * bytes = alloc_bytes(100);
-    struct byte * bytes2 = alloc_bytes(100);
+    byte * ans = alloc_bytes(100);
+    byte * bytes = alloc_bytes(100);
+    byte * bytes2 = alloc_bytes(100);
 
     int len = 0;
     for (int i = 0; i < 327; i++) {

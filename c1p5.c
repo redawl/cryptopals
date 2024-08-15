@@ -4,11 +4,11 @@
 
 int main(){
     char * data = "Burning 'em, if you ain't quick and nimble I go crazy when I hear a cymbal";
-    struct byte * bytes = alloc_bytes(strlen(data));
+    byte * bytes = alloc_bytes(strlen(data));
     int len = from_string(data, bytes);
-    struct byte * output = alloc_bytes(len);
+    byte * output = alloc_bytes(len);
     char * keydata = "ICE";
-    struct byte * key = alloc_bytes(3);
+    byte * key = alloc_bytes(3);
     int keylen = from_string(keydata, key);
     repeating_key_xor(bytes, key, len, keylen, output);
     print_hex(output, len);

@@ -70,12 +70,12 @@ int main(){
     "NhxYCjgSJzWOUD34Y1dAfcj57VINmQVEWyc8Tch8vg9MnHGCOfOjRqp0VGyA"
     "S15AVD2QS1V6fhRimJSVyT6QuGb8tKRsl2N+a2Xze36vgMhw7XK7zh//jC2H";
     unsigned char * skey = "YELLOW SUBMARINE";
-    struct byte * key = alloc_bytes(strlen(skey));
+    byte * key = alloc_bytes(strlen(skey));
     int keylen = from_string(skey, key);
-    struct byte * bytes = alloc_bytes(strlen(data));
+    byte * bytes = alloc_bytes(strlen(data));
     int len = from_b64(data, bytes);
 
-    struct byte * output = alloc_bytes(len * 2);
+    byte * output = alloc_bytes(len * 2);
 
     len = aes_128_ecb_decrypt(bytes, len, key, keylen, output);
 

@@ -2,14 +2,14 @@
 #include <string.h>
 #include "bytes.h"
 
-void print_bytes (const struct byte * bytes, int len) {
+void print_bytes (const byte * bytes, int len) {
     for (int i = 0; i < len; i++) {
-        struct byte temp;
-        temp.data = bytes[i].data;
+        byte temp;
+        temp = bytes[i];
         for (int j = 1; j <= MAX_BYTE; j *= 2) {
-            if (temp.data - MAX_BYTE / j >= 0) {
+            if (temp - MAX_BYTE / j >= 0) {
                 printf("1");
-                temp.data -= MAX_BYTE / j;
+                temp -= MAX_BYTE / j;
             } else {
                 printf("0");
             }
@@ -18,19 +18,19 @@ void print_bytes (const struct byte * bytes, int len) {
     }
 }
 
-void print_hex_helper (struct byte b) {
-    if(b.data >= 0 && b.data <= 9) printf("%c", b.data + '0');
-    else if(b.data >= 10 && b.data <= 15) printf("%c", b.data + 'a' - 10);
+void print_hex_helper (byte b) {
+    if(b >= 0 && b <= 9) printf("%c", b + '0');
+    else if(b >= 10 && b <= 15) printf("%c", b + 'a' - 10);
     else printf("?"); // prints if invalid hex        
 }
 
-void print_hex (const struct byte * hex, int len) {
+void print_hex (const byte * hex, int len) {
     for (int i = 0; i < len; i++) {
-        struct byte temp1;
-        temp1.data = hex[i].data << 4;
-        temp1.data = temp1.data >> 4;
-        struct byte temp2;
-        temp2.data = hex[i].data >> 4;
+        byte temp1;
+        temp1 = hex[i] << 4;
+        temp1 = temp1 >> 4;
+        byte temp2;
+        temp2 = hex[i] >> 4;
         print_hex_helper(temp2); 
         print_hex_helper(temp1);  
     }
@@ -42,61 +42,61 @@ unsigned char print_b64_helper (unsigned char b) {
     else if (b >= 52 && b <= 61) return b + '0' - 52;
     else if (b == 62) return '+';
     else if (b == 63) return '/';
-    else return '?'; //if invalid b64
+    else return '?'; // if invalid b64
 }
 
-void print_b64 (const struct byte * b64, int len) {
+void print_b64 (const byte * b64, int len) {
     for (int i = 0; i < len - (len % 3); i += 3) {
-        struct byte temp1;
-        temp1.data = b64[i].data >> 2;
-        struct byte temp2;
-        temp2.data = b64[i].data << 6;
-        temp2.data = temp2.data >> 2;
-        temp2.data += b64[i + 1].data >> 4;
-        struct byte temp3;
-        temp3.data = b64[i + 1].data << 4;
-        temp3.data = temp3.data >> 2;
-        temp3.data += b64[i + 2].data >> 6;
-        struct byte temp4;
-        temp4.data = b64[i + 2].data << 2;
-        temp4.data = temp4.data >> 2;
-        printf("%c%c%c%c", print_b64_helper(temp1.data), print_b64_helper(temp2.data), 
-               print_b64_helper(temp3.data), print_b64_helper(temp4.data));
+        byte temp1;
+        temp1 = b64[i] >> 2;
+        byte temp2;
+        temp2 = b64[i] << 6;
+        temp2 = temp2 >> 2;
+        temp2 += b64[i + 1] >> 4;
+        byte temp3;
+        temp3 = b64[i + 1] << 4;
+        temp3 = temp3 >> 2;
+        temp3 += b64[i + 2] >> 6;
+        byte temp4;
+        temp4 = b64[i + 2] << 2;
+        temp4 = temp4 >> 2;
+        printf("%c%c%c%c", print_b64_helper(temp1), print_b64_helper(temp2), 
+               print_b64_helper(temp3), print_b64_helper(temp4));
     }
     if (len % 3 == 1) {
-        struct byte temp1;
-        temp1.data = b64[len - 1].data >> 2;
-        struct byte temp2;
-        temp2.data = b64[len - 1].data << 6;
-        temp2.data = temp2.data >> 2;
-        printf("%c%c%c%c", print_b64_helper(temp1.data),
-               print_b64_helper(temp2.data), '=', '=');
+        byte temp1;
+        temp1 = b64[len - 1] >> 2;
+        byte temp2;
+        temp2 = b64[len - 1] << 6;
+        temp2 = temp2 >> 2;
+        printf("%c%c%c%c", print_b64_helper(temp1),
+               print_b64_helper(temp2), '=', '=');
     } else if(len % 3 == 2) {
-        struct byte temp1;
-        temp1.data = b64[len - 2].data >> 2;
-        struct byte temp2;
-        temp2.data = b64[len - 2].data << 6;
-        temp2.data = temp2.data >> 2;
-        temp2.data += b64[len - 1].data >> 4;
-        struct byte temp3;
-        temp3.data = b64[len - 1].data << 4;
-        temp3.data = temp3.data >> 2;
-        printf("%c%c%c%c", print_b64_helper(temp1.data),
-               print_b64_helper(temp2.data), print_b64_helper(temp3.data), '=');
+        byte temp1;
+        temp1 = b64[len - 2] >> 2;
+        byte temp2;
+        temp2 = b64[len - 2] << 6;
+        temp2 = temp2 >> 2;
+        temp2 += b64[len - 1] >> 4;
+        byte temp3;
+        temp3 = b64[len - 1] << 4;
+        temp3 = temp3 >> 2;
+        printf("%c%c%c%c", print_b64_helper(temp1),
+               print_b64_helper(temp2), print_b64_helper(temp3), '=');
     }
 }
 
-struct byte * alloc_bytes (int len) {
-    return (struct byte *)malloc(len * sizeof(struct byte));
+byte * alloc_bytes (int len) {
+    return (byte *)malloc(len * sizeof(byte));
 }
 
-void print (const struct byte * string, int len) {
+void print (const byte * string, int len) {
     for (int i = 0; i < len; i++) {
-        printf("%c", string[i].data);
+        printf("%c", string[i]);
     }
 }   
 
-int cat (struct byte * d1, int l1, struct byte * d2, int l2, struct byte * output) {
+int cat (byte * d1, int l1, byte * d2, int l2, byte * output) {
     memcpy(output, d1, l1);
     memcpy(output + l1, d2, l2);
     return l1 + l2;
@@ -104,14 +104,14 @@ int cat (struct byte * d1, int l1, struct byte * d2, int l2, struct byte * outpu
 unsigned char from_hex_helper (unsigned char hex) {
     if (hex >= 'a' && hex <= 'f') return hex - 'a' + 10;
     else if (hex >= '0' && hex <= '9') return hex - '0';
-    else return '?'; //if invalid hex
+    else return '?'; // if invalid hex
 }
-int from_hex (char * hex, struct byte * bytes) {
+int from_hex (char * hex, byte * bytes) {
     int counter = 0;
     for (int i = 0; i < strlen(hex); i += 2) {
-        struct byte temp;
-        temp.data = from_hex_helper(hex[i]) << 4;
-        temp.data += from_hex_helper(hex[i+1]);
+        byte temp;
+        temp = from_hex_helper(hex[i]) << 4;
+        temp += from_hex_helper(hex[i+1]);
         bytes[counter] = temp;
         counter++;
     }
@@ -124,23 +124,23 @@ unsigned char from_b64_helper (unsigned char b) {
     else if (b >= '0' && b <= '9') return b - '0' + 52;
     else if (b == '+') return 62;
     else if (b == '/') return 63;
-    else return '?'; //invalid b64 
+    else return '?'; // invalid b64 
 }
 
-int from_b64 (char * b64, struct byte * bytes) {
+int from_b64 (char * b64, byte * bytes) {
     int len = strlen(b64);
     int counter = 0;
     if(b64[len - 1] == '=') len -= 4;
     for (int i = 0;  i < len; i += 4) {
-        struct byte temp1;
-        temp1.data = from_b64_helper(b64[i]) << 2;
-        temp1.data += from_b64_helper(b64[i+1]) >> 4;
-        struct byte temp2;
-        temp2.data = from_b64_helper(b64[i+1]) << 4;
-        temp2.data += from_b64_helper(b64[i+2]) >> 2;
-        struct byte temp3;
-        temp3.data = from_b64_helper(b64[i+2]) << 6;
-        temp3.data += from_b64_helper(b64[i+3]);
+        byte temp1;
+        temp1 = from_b64_helper(b64[i]) << 2;
+        temp1 += from_b64_helper(b64[i+1]) >> 4;
+        byte temp2;
+        temp2 = from_b64_helper(b64[i+1]) << 4;
+        temp2 += from_b64_helper(b64[i+2]) >> 2;
+        byte temp3;
+        temp3 = from_b64_helper(b64[i+2]) << 6;
+        temp3 += from_b64_helper(b64[i+3]);
         bytes[counter] = temp1;
         counter++;
         bytes[counter] = temp2;
@@ -151,18 +151,18 @@ int from_b64 (char * b64, struct byte * bytes) {
 
     len = strlen(b64);
     if (b64[len - 1] == '=' && b64[len - 2] == '=') {
-        struct byte temp1;
-        temp1.data = from_b64_helper(b64[len - 4]) << 2;
-        temp1.data += from_b64_helper(b64[len - 3]) >> 4;
+        byte temp1;
+        temp1 = from_b64_helper(b64[len - 4]) << 2;
+        temp1 += from_b64_helper(b64[len - 3]) >> 4;
         bytes[counter] = temp1;
         counter++;
     } else if (b64[len - 1] == '=') {
-        struct byte temp1;
-        temp1.data = from_b64_helper(b64[len - 4]) << 2;
-        temp1.data += from_b64_helper(b64[len - 3]) >> 4;
-        struct byte temp2;
-        temp2.data = from_b64_helper(b64[len - 3]) << 4;
-        temp2.data += from_b64_helper(b64[len - 2]) >> 2;
+        byte temp1;
+        temp1 = from_b64_helper(b64[len - 4]) << 2;
+        temp1 += from_b64_helper(b64[len - 3]) >> 4;
+        byte temp2;
+        temp2 = from_b64_helper(b64[len - 3]) << 4;
+        temp2 += from_b64_helper(b64[len - 2]) >> 2;
         bytes[counter] = temp1;
         counter++;
         bytes[counter] = temp2;
@@ -173,27 +173,27 @@ int from_b64 (char * b64, struct byte * bytes) {
     return counter;
 }
 
-int from_string (char * str, struct byte * bytes) {
+int from_string (char * str, byte * bytes) {
     for (int i = 0; i < strlen(str); i++) {
-        bytes[i].data = str[i];
+        bytes[i] = str[i];
     }
 
     return strlen(str);
 }
 
-void to_string (struct byte * bytes, int len, unsigned char * str) {
+void to_string (byte * bytes, int len, unsigned char * str) {
     for (int i = 0; i < len; i++) {
-        str[i] = bytes[i].data;
+        str[i] = bytes[i];
     }
 }
 
-void XOR (struct byte * b1, struct byte * b2, struct byte * output, int len) {
+void XOR (byte * b1, byte * b2, byte * output, int len) {
     for (int i = 0; i < len; i++) {
-        output[i].data = b1[i].data ^ b2[i].data;
+        output[i] = b1[i] ^ b2[i];
     }
 }
 
-float english_score (struct byte * b, int len) {
+float english_score (byte * b, int len) {
     float ret = 0.0;
     float scores[256] = {0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
 0.000000, 0.000000, 0.000000, 0.002833, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
@@ -225,24 +225,24 @@ float english_score (struct byte * b, int len) {
 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000,
 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000};
     for (int i = 0; i < len; i++) {
-        ret += scores[b[i].data];
+        ret += scores[b[i]];
     }
     return ret;
 }
 
-void single_byte_xor (struct byte * b, int len, struct byte key, struct byte * output) {
+void single_byte_xor (byte * b, int len, byte key, byte * output) {
     for (int i = 0; i < len; i++) {
-        output[i].data = b[i].data ^ key.data;
+        output[i] = b[i] ^ key;
     }
 }
 
-unsigned char single_byte_xor_decrypt (struct byte * b, int len, struct byte * output) {
+unsigned char single_byte_xor_decrypt (byte * b, int len, byte * output) {
     float max = 0.0;
-    struct byte * temp = alloc_bytes(len);
+    byte * temp = alloc_bytes(len);
     unsigned char ret;
     for (unsigned char i = 0; i < MAX_BYTE; i++) {
-        struct byte key;
-        key.data = i;
+        byte key;
+        key = i;
         single_byte_xor(b, len, key, temp);
         float curr = english_score(temp, len);
         if (curr > max) {
@@ -255,32 +255,32 @@ unsigned char single_byte_xor_decrypt (struct byte * b, int len, struct byte * o
     return ret;
 }
 
-void repeating_key_xor (struct byte * b, struct byte * key, int len, int keylen, struct byte * output) {
+void repeating_key_xor (byte * b, byte * key, int len, int keylen, byte * output) {
     for(int i = 0; i < len; i++){
-        output[i].data = b[i].data ^ key[i % keylen].data;
+        output[i] = b[i] ^ key[i % keylen];
     }
 }
 
-int hamming (struct byte * b1, struct byte * b2, int len) {
+int hamming (byte * b1, byte * b2, int len) {
     int ret = 0;
     for (int i = 0; i < len; i++) {
-        struct byte temp;
-        temp.data = b1[i].data ^ b2[i].data;
+        byte temp;
+        temp = b1[i] ^ b2[i];
         for (int j = 1; j <= MAX_BYTE; j *= 2) {
-            if (temp.data - MAX_BYTE / j >= 0) {
+            if (temp - MAX_BYTE / j >= 0) {
                 ret++;
-                temp.data -= MAX_BYTE / j;
+                temp -= MAX_BYTE / j;
             }
         }
     }
     return ret;
 }
 
-void repeating_key_xor_decrypt (struct byte * b, int len, struct byte * output) {
-    struct byte * temp1 = alloc_bytes(len);
-    struct byte * temp2 = alloc_bytes(len);
-    struct byte * temp3 = alloc_bytes(len);
-    struct byte * temp4 = alloc_bytes(len);
+void repeating_key_xor_decrypt (byte * b, int len, byte * output) {
+    byte * temp1 = alloc_bytes(len);
+    byte * temp2 = alloc_bytes(len);
+    byte * temp3 = alloc_bytes(len);
+    byte * temp4 = alloc_bytes(len);
     int min[3] = {1000, 1000, 1000};
     int keysize[3] = {0, 0, 0};
      
@@ -307,16 +307,16 @@ void repeating_key_xor_decrypt (struct byte * b, int len, struct byte * output) 
 
     float max = 0;
     for (int k = 0; k < 3; k++) {
-        struct byte * key = alloc_bytes(keysize[k]);
-        struct byte * trash = alloc_bytes(len);
-        struct byte * trash2 = alloc_bytes(len);
+        byte * key = alloc_bytes(keysize[k]);
+        byte * trash = alloc_bytes(len);
+        byte * trash2 = alloc_bytes(len);
         for (int i = 0; i < keysize[k]; i++) {
             int counter = 0;
             for (int j = i; j < len; j += keysize[k]) {
                 trash[counter] = b[j];
                 counter++;
             }
-            key[i].data = single_byte_xor_decrypt(trash, counter, trash2);
+            key[i] = single_byte_xor_decrypt(trash, counter, trash2);
         }
         repeating_key_xor(b, key, len, keysize[k], trash);
         float score = english_score(trash, len);
@@ -334,7 +334,7 @@ void repeating_key_xor_decrypt (struct byte * b, int len, struct byte * output) 
     free(temp4);
 }
 
-int aes_128_ecb_decrypt (struct byte * input, int len, struct byte * key, int keylen, struct byte * output) {
+int aes_128_ecb_decrypt (byte * input, int len, byte * key, int keylen, byte * output) {
     unsigned char * skey = (unsigned char *)malloc(keylen * sizeof(unsigned char));
     to_string(key, keylen, skey);
     
@@ -356,3 +356,4 @@ int aes_128_ecb_decrypt (struct byte * input, int len, struct byte * key, int ke
     free(soutput);
     return ret;
 }
+
