@@ -30,6 +30,12 @@ void single_byte_xor(byte * b, int len, byte key, byte * output);
 unsigned char single_byte_xor_decrypt(byte * b, int len, byte * output);
 void repeating_key_xor(byte * b, byte * key, int len, int keylen, byte * output);
 void repeating_key_xor_decrypt(byte * b, int len, byte * output);
+int entropy(byte * b1, int byte_count);
+int num_splits(byte * data, char splitter);
+byte ** split(byte * data, char splitter, int num_lines);
+
+// I/O
+byte * from_file(const char * fileName);
 
 // openssl
 int aes_128_ecb_decrypt(byte * input, int len, byte * key, int keylen, byte * output);

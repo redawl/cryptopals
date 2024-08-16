@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
+#include <sys/stat.h>
 #include "bytes.h"
 
 void print_bytes (const byte * bytes, int len) {
@@ -332,6 +334,106 @@ void repeating_key_xor_decrypt (byte * b, int len, byte * output) {
     free(temp2);
     free(temp3);
     free(temp4);
+}
+
+int entropy (byte * b1, int byte_count) {
+    int size = strlen(b1);
+    int chunk_count = (int)(size / byte_count);
+
+    byte ** unique_chunks = (byte **) malloc(chunk_count * sizeof(byte *));
+
+    int unique_chunk_count = 1;
+    unique_chunks[0] = (byte *) malloc(byte_count * sizeof(byte));
+    strncpy(unique_chunks[0], b1, byte_count);
+    for (int i = 1; i < chunk_count; i++) {
+        bool exists = false;
+        for (int j = 0; j < unique_chunk_count; j++){
+            if(strncmp(unique_chunks[j], b1 + (i * byte_count), byte_count) == 0){
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            unique_chunks[unique_chunk_count] = (byte *) malloc(byte_count * sizeof(byte));
+            strncpy(unique_chunks[unique_chunk_count], b1 + (i * byte_count), byte_count);
+            unique_chunk_count++;
+        }
+    }
+    
+    for (int i = 0; i < unique_chunk_count; i++) {
+        free(unique_chunks[i]);
+    }
+
+    free(unique_chunks);
+
+    return unique_chunk_count;
+}
+
+int num_splits(byte * data, char splitter) {
+    // Get count of chunks
+    int num_chunks = 1;
+    
+    byte * ptr = data;
+
+    while((ptr = strchr(ptr, splitter)) != NULL){
+        ptr = ptr + 1;
+        num_chunks++;
+    }
+
+    return num_chunks;
+}
+
+byte ** split (byte * data, char splitter, int num_lines) {
+    byte ** ret = (byte **) malloc(num_lines * sizeof(byte *));
+
+    byte * ptr = data;
+    
+    int index = 0;
+    while (ptr != NULL) {
+        byte * next = strchr(ptr, splitter);
+        
+        if (next == NULL) {
+            break;
+        }
+
+        ret[index] = (byte *) malloc((next - ptr + 1) * sizeof(byte));
+        strncpy(ret[index], ptr, next - ptr);
+        ret[index][next - ptr] = '\0';
+
+        ptr = next + 1;
+        index++;
+    }
+
+    // Rest of data
+    ret[index] = (byte *) malloc((strlen(ptr) + 1) * sizeof(byte));
+    strcpy(ret[index], ptr);
+
+    return ret;
+}
+
+byte * from_file (const char * fileName) {
+    FILE * file = fopen(fileName, "r");
+    
+    struct stat st;
+    fstat(fileno(file), &st);
+
+    int len = st.st_size;
+
+    byte * buff = (byte *) malloc((len * sizeof(byte)) + 1);
+
+    int c;
+
+    int i = 0;
+    while ((c = fgetc(file)) != EOF) {
+        buff[i] = c;
+        i++;
+    }
+
+    buff[i-1] = '\0';
+    fclose(file);
+
+    return buff;
 }
 
 int aes_128_ecb_decrypt (byte * input, int len, byte * key, int keylen, byte * output) {
